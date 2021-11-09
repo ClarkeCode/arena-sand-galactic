@@ -13,7 +13,8 @@ import flixel.util.FlxColor;
 class Player extends FlxSprite
 {
 	static inline var VISUAL_SIZE:Int = 32;
-	static inline var SPEED:Int = 2;
+	// Pixels per second
+	static inline var SPEED:Int = 40;
 
 	static var actions:FlxActionManager;
 
@@ -22,13 +23,14 @@ class Player extends FlxSprite
 	var left:FlxActionDigital;
 	var right:FlxActionDigital;
 
-	var moveX:Float = 0;
-	var moveY:Float = 0;
-
-	var position:FlxPoint;
-	var vel:FlxVelocity;
+	var jump:FlxActionDigital;
 
 	var reticle:Reticle;
+
+	// Per-player gravity in case we want to have gravity altering fields etc
+	// Currently only pulls downward
+	// Gravity should probably be initially set by the level
+	public var gravity:Float;
 
 	public function new(X:Int, Y:Int)
 	{
@@ -36,19 +38,22 @@ class Player extends FlxSprite
 		makeGraphic(VISUAL_SIZE, VISUAL_SIZE, FlxColor.fromRGB(42, 157, 143));
 		addInputs();
 		reticle = new Reticle(x, y, this);
+		gravity = 100;
 	}
 
 	function addInputs():Void
 	{
+		// TODO: move controller code into a separate file
 		// digital actions allow for on/off directional movement
 		up = new FlxActionDigital();
 		down = new FlxActionDigital();
 		left = new FlxActionDigital();
 		right = new FlxActionDigital();
+		jump = new FlxActionDigital();
 
 		if (actions == null)
 			actions = FlxG.inputs.add(new FlxActionManager());
-		actions.addActions([up, down, left, right]);
+		actions.addActions([up, down, left, right, jump]);
 
 		// Add keyboard inputs
 		up.addKey(UP, PRESSED);
@@ -59,48 +64,49 @@ class Player extends FlxSprite
 		left.addKey(A, PRESSED);
 		right.addKey(RIGHT, PRESSED);
 		right.addKey(D, PRESSED);
+
+		jump.addKey(SPACE, PRESSED);
 	}
 
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+		// Gravity
+		acceleration.y = gravity;
 
-		velocity.x = 0;
-		velocity.y = 0;
-
-		x += moveX * SPEED;
-		y += moveY * SPEED;
-		// FlxVelocity.moveTowardsMouse(this, 30);
-		moveX = 0;
-		moveY = 0;
-
-		updateDigital();
-		reticle.update(elapsed);
-	}
-
-	function updateDigital():Void
-	{
-		if (down.triggered)
-		{
-			moveY = 1;
-		}
-		else if (up.triggered)
-		{
-			moveY = -1;
-		}
 		if (left.triggered)
 		{
-			moveX = -1;
+			velocity.x = -SPEED;
 		}
 		else if (right.triggered)
 		{
-			moveX = 1;
+			velocity.x = SPEED;
+		}
+		else if (!left.triggered && !right.triggered)
+		{
+			velocity.x = 0;
 		}
 
-		if (moveX != 0 && moveY != 0)
+		if (jump.triggered)
 		{
-			moveX *= .707;
-			moveY *= .707;
+			velocity.y = -SPEED;
 		}
+
+		// // FlxVelocity.moveTowardsMouse(this, 30);
+
+		// TODO: hack to give a "floor" until level collision is fixed
+		if (y > 300)
+		{
+			y = 300;
+			acceleration.y = 0;
+		}
+
+		// if (moveX != 0 && moveY != 0)
+		// {
+		// 	moveX *= .707;
+		// 	moveY *= .707;
+		// }
+
+		reticle.update(elapsed);
 	}
 }

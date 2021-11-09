@@ -33,7 +33,7 @@ class PlayState extends FlxState
 		walls.setTileProperties(2, ANY);
 		add(walls);
 
-		this.player = new Player(50, 50);
+		this.player = new Player(200, 200);
 		map.loadEntities(placeEntities, "entities");
 		add(player);
 		FlxG.collide(this.player, walls);
