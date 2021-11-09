@@ -11,15 +11,13 @@ import flixel.util.FlxColor;
 import flixel.util.FlxColor;
 import models.Player;
 
-class PlayState extends FlxState
-{
+class PlayState extends FlxState {
 	public var player:Player;
 
 	private var walls:FlxTilemap;
 	private var map:FlxOgmo3Loader;
 
-	override public function create()
-	{
+	override public function create() {
 		super.create();
 		// this.level = new Level(this);
 		// add(this.level);
@@ -36,25 +34,22 @@ class PlayState extends FlxState
 		this.player = new Player(200, 200);
 		map.loadEntities(placeEntities, "entities");
 		add(player);
+		// add(player.reticle);
 		FlxG.collide(this.player, walls);
 	}
 
-	override public function update(elapsed:Float)
-	{
+	override public function update(elapsed:Float) {
 		super.update(elapsed);
 		player.update(elapsed);
 	}
 
-	override public function destroy():Void
-	{
+	override public function destroy():Void {
 		super.destroy();
 		player = null;
 	}
 
-	public function placeEntities(entity:EntityData)
-	{
-		if (entity.name == "player")
-		{
+	public function placeEntities(entity:EntityData) {
+		if (entity.name == "player") {
 			player.setPosition(entity.x, entity.y);
 		}
 	}

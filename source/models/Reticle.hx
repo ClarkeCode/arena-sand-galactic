@@ -10,15 +10,13 @@ import flixel.math.FlxVector;
 import flixel.math.FlxVelocity;
 import flixel.util.FlxColor;
 
-class Reticle extends FlxSprite
-{
+class Reticle extends FlxSprite {
 	public var distanceFromPlayer:Float;
 
 	var angleFromPlayer:Float;
 	var _player:Player;
 
-	public function new(X:Float, Y:Float, player:Player)
-	{
+	public function new(X:Float, Y:Float, player:Player) {
 		super(X, Y);
 		makeGraphic(5, 5, FlxColor.fromRGB(255, 40, 40));
 		distanceFromPlayer = 60;
@@ -26,8 +24,7 @@ class Reticle extends FlxSprite
 		this._player = player;
 	}
 
-	override public function update(elapsed:Float):Void
-	{
+	override public function update(elapsed:Float):Void {
 		super.update(elapsed);
 		angleFromPlayer = FlxAngle.angleBetweenMouse(_player);
 		var newPosition:FlxVector = new FlxVector();
