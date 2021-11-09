@@ -1,9 +1,12 @@
-package;
+package models;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.input.actions.FlxAction.FlxActionDigital;
 import flixel.input.actions.FlxActionManager;
+import flixel.math.FlxPoint;
+import flixel.math.FlxVector;
+import flixel.math.FlxVelocity;
 import flixel.util.FlxColor;
 
 // Adapted from https://github.com/HaxeFlixel/flixel-demos/blob/master/Input/FlxAction/source/Player.hx
@@ -22,11 +25,17 @@ class Player extends FlxSprite
 	var moveX:Float = 0;
 	var moveY:Float = 0;
 
+	var position:FlxPoint;
+	var vel:FlxVelocity;
+
+	var reticle:Reticle;
+
 	public function new(X:Int, Y:Int)
 	{
 		super(X, Y);
-		makeGraphic(VISUAL_SIZE, VISUAL_SIZE, FlxColor.RED);
+		makeGraphic(VISUAL_SIZE, VISUAL_SIZE, FlxColor.fromRGB(42, 157, 143));
 		addInputs();
+		reticle = new Reticle(x, y, this);
 	}
 
 	function addInputs():Void
@@ -61,11 +70,12 @@ class Player extends FlxSprite
 
 		x += moveX * SPEED;
 		y += moveY * SPEED;
-
+		// FlxVelocity.moveTowardsMouse(this, 30);
 		moveX = 0;
 		moveY = 0;
 
 		updateDigital();
+		reticle.update(elapsed);
 	}
 
 	function updateDigital():Void
