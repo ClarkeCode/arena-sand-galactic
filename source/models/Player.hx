@@ -2,6 +2,7 @@ package models;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.group.FlxGroup;
 import flixel.input.actions.FlxAction.FlxActionDigital;
 import flixel.input.actions.FlxActionManager;
 import flixel.math.FlxPoint;
@@ -36,7 +37,7 @@ class Player extends FlxSprite {
 	var maxJumps = 3;
 
 	public var reticle:Reticle;
-	public var bullet:Projectile;
+	public var bullets:FlxTypedGroup<FlxSprite>;
 
 	// Per-player gravity in case we want to have gravity altering fields etc
 	// Currently only pulls downward
@@ -58,11 +59,9 @@ class Player extends FlxSprite {
 		state.add(this);
 		reticle = new Reticle(x, y, this, state);
 
+		bullets = new FlxTypedGroup<FlxSprite>();
+		state.add(bullets);
 		_state = state;
-		var bvel = new FlxPoint(0, 0);
-		bullet = new Projectile(x, y, bvel);
-		bullet.makeGraphic(4, 4, 0x00000000);
-		state.add(bullet);
 	}
 
 	// TODO: move controller code into a separate file
@@ -140,11 +139,10 @@ class Player extends FlxSprite {
 		}
 
 		if (fire.triggered) {
-			bullet.kill();
-			bullet = new Projectile(x, y);
+			var bullet = new Projectile(x, y);
 			bullet.makeGraphic(4, 4, FlxColor.PURPLE);
 			bullet.fireAtPosition(x + origin.x, y + origin.y, FlxG.mouse.x, FlxG.mouse.y);
-			_state.add(bullet);
+			bullets.add(bullet);
 		}
 		// // FlxVelocity.moveTowardsMouse(this, 30);
 
@@ -154,7 +152,7 @@ class Player extends FlxSprite {
 		// 	moveY *= .707;
 		// }
 
-		bullet.update(elapsed);
+		bullets.update(elapsed);
 
 		if (DEBUG) {
 			var buff = new StringBuf();
