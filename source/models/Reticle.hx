@@ -29,7 +29,9 @@ class Reticle extends FlxSprite {
 		super.update(elapsed);
 		x = FlxG.mouse.x;
 		y = FlxG.mouse.y;
-		var playerDifference:FlxVector = new FlxVector(x - _player.x, y - _player.y);
+		var playerDifference:FlxVector = new FlxVector(x, y);
+		playerDifference.subtract(_player.x + _player.origin.x, _player.y + _player.origin.y);
+
 		var scaleFactor:Float = distanceFromPlayer / playerDifference.length;
 		playerDifference = playerDifference.scale(scaleFactor);
 		playerDifference.add(_player.x + _player.origin.x, _player.y + _player.origin.y);
