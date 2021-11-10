@@ -4,8 +4,9 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
+import flixel.math.FlxVector;
 
-class ProjectileAttributes {
+class Projectile extends FlxSprite {
 	public var baseDamage:Float = 1;
 	public var projectileMaxHP:Float = 1;
 	public var isTrackingLifespan:Bool = false;
@@ -15,37 +16,27 @@ class ProjectileAttributes {
 	public var startingX:Float = 0;
 	public var startingY:Float = 0;
 
-	public function new(?damage:Float = 1, ?projDurability:Float = 1, ?trackLifespan:Bool = false, ?maximumLifespan = 5) {
+	public function new(X:Float, Y:Float, ?vel:FlxPoint, ?acc:FlxPoint, ?damage:Float = 1, ?projDurability:Float = 1, ?trackLifespan:Bool = false,
+			?maximumLifespan = 5) {
+		super(X, Y);
+		// TODO: ???
+		// velocity = vel;
+		// acceleration = acc;
+
+		startingX = X;
+		startingY = Y;
 		baseDamage = damage;
 		projectileMaxHP = projDurability;
 		isTrackingLifespan = trackLifespan;
 		maxProjectileAge = maximumLifespan;
 	}
 
-	public function setStartPosition(X:Float, Y:Float) {
-		startingX = X;
-		startingY = Y;
-	}
-}
-
-class Projectile extends FlxSprite {
-	public var attributes:ProjectileAttributes;
-
-	public function new(X:Float, Y:Float, vel:FlxPoint, ?acc:FlxPoint, ?attr:ProjectileAttributes) {
-		super(X, Y);
-		velocity = vel;
-		acceleration = acc;
-
-		attributes = attr;
-		attributes.setStartPosition(x, y);
-	}
-
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
-		if (attributes.isTrackingLifespan) {
-			attributes.projectileAge += elapsed;
+		if (isTrackingLifespan) {
+			projectileAge += elapsed;
 			// If a projectile has exceeded its maximum lifespan, it should destroy itself
-			if (attributes.projectileAge > attributes.maxProjectileAge) {
+			if (projectileAge > maxProjectileAge) {
 				this.kill();
 			}
 		}
@@ -55,7 +46,20 @@ class Projectile extends FlxSprite {
 		}
 	}
 
+	public function fireAtPosition(srcX:Float, srcY:Float, targetX:Float, targetY:Float) {
+		x = srcX;
+		y = srcY;
+		x -= origin.x / 2;
+		y -= origin.y / 2;
+
+		var difference = new FlxVector(targetX - x, targetY - y);
+		difference.normalize();
+		difference.scale(200);
+		velocity.x = difference.x;
+		velocity.y = difference.y;
+	}
+
 	public function dealDamageToObject(other:FlxObject) {
-		other.hurt(attributes.baseDamage);
+		other.hurt(baseDamage);
 	}
 }
