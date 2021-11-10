@@ -11,11 +11,13 @@ import flixel.util.FlxColor;
 import flixel.util.FlxColor;
 import models.Player;
 
+using vendor.FlxOgmoUtils;
+using vendor.OgmoUtils;
+
 class PlayState extends FlxState {
 	public var player:Player;
 
-	private var walls:FlxTilemap;
-	private var map:FlxOgmo3Loader;
+	private var level:FlxTilemap = new FlxTilemap();
 
 	override public function create() {
 		super.create();
@@ -24,22 +26,24 @@ class PlayState extends FlxState {
 		bgColor = FlxColor.fromRGB(233, 196, 106);
 
 		// Map loading
-		map = new FlxOgmo3Loader(AssetPaths.testing__ogmo, AssetPaths.testing__json);
-		walls = map.loadTilemap(AssetPaths.tiles__png, "walls");
-		walls.follow();
-		walls.setTileProperties(1, NONE);
-		walls.setTileProperties(2, ANY);
-		add(walls);
-
-		this.player = new Player(200, 200, this);
-		map.loadEntities(placeEntities, "entities");
-
-		FlxG.collide(this.player, walls);
+		var ogmo = FlxOgmoUtils.get_ogmo_package('assets/data/testzone.ogmo', 'assets/data/testzone.json');
+		level.load_tilemap(ogmo, 'assets/images/', 'walls');
+		add(level);
+		ogmo.level.get_entity_layer('entities').load_entities(placeEntities);
+		// map = new FlxOgmo3Loader(AssetPaths.testzone__ogmo, AssetPaths.testzone__json);
+		// walls = map.loadTilemap(AssetPaths.tiles__png, "walls");
+		// walls.follow();
+		// walls.setTileProperties(1, NONE);
+		// walls.setTileProperties(2, ANY);
+		// add(walls);
 	}
 
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
-		player.update(elapsed);
+		if (player != null) {
+			player.update(elapsed);
+			FlxG.collide(level, player);
+		}
 	}
 
 	override public function destroy():Void {
@@ -47,9 +51,9 @@ class PlayState extends FlxState {
 		player = null;
 	}
 
-	public function placeEntities(entity:EntityData) {
-		if (entity.name == "player") {
-			player.setPosition(entity.x, entity.y);
+	public function placeEntities(e:EntityData) {
+		if (e.name == "player") {
+			add(player = new Player(e.x, e.y, this));
 		}
 	}
 }
