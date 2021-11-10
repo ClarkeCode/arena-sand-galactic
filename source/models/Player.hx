@@ -12,7 +12,7 @@ import flixel.util.FlxColor;
 
 // Adapted from https://github.com/HaxeFlixel/flixel-demos/blob/master/Input/FlxAction/source/Player.hx
 class Player extends FlxSprite {
-	static inline var VISUAL_SIZE:Int = 32;
+	static inline var VISUAL_SIZE:Int = 16;
 	// Pixels per second
 	static inline var SPEED:Int = 110;
 	static inline var JUMP_STRENGTH:Float = 200;
@@ -82,7 +82,7 @@ class Player extends FlxSprite {
 		jump.addKey(SPACE, PRESSED);
 	}
 
-	function landOnGround() {
+	public function landOnGround(e:Dynamic, e2:Dynamic) {
 		acceleration.y = 0;
 		isJumping = false;
 		jumpHangTime = 0;
@@ -130,10 +130,10 @@ class Player extends FlxSprite {
 		// // FlxVelocity.moveTowardsMouse(this, 30);
 
 		// TODO: hack to give a "floor" until level collision is fixed
-		if (y > FlxG.height - 65) {
-			y = FlxG.height - 65;
-			landOnGround();
-		}
+		// if (y > FlxG.height - 65) {
+		// 	y = FlxG.height - 65;
+		// 	landOnGround();
+		// }
 
 		// if (moveX != 0 && moveY != 0)
 		// {
