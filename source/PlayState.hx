@@ -30,19 +30,13 @@ class PlayState extends FlxState {
 		level.load_tilemap(ogmo, 'assets/images/', 'walls');
 		add(level);
 		ogmo.level.get_entity_layer('entities').load_entities(placeEntities);
-		// map = new FlxOgmo3Loader(AssetPaths.testzone__ogmo, AssetPaths.testzone__json);
-		// walls = map.loadTilemap(AssetPaths.tiles__png, "walls");
-		// walls.follow();
-		// walls.setTileProperties(1, NONE);
-		// walls.setTileProperties(2, ANY);
-		// add(walls);
 	}
 
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
 		if (player != null) {
 			player.update(elapsed);
-			FlxG.collide(level, player);
+			FlxG.collide(level, player, player.landOnGround);
 		}
 	}
 
