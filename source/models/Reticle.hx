@@ -16,12 +16,13 @@ class Reticle extends FlxSprite {
 	var angleFromPlayer:Float;
 	var _player:Player;
 
-	public function new(X:Float, Y:Float, player:Player) {
+	public function new(X:Float, Y:Float, player:Player, state:PlayState) {
 		super(X, Y);
 		makeGraphic(5, 5, FlxColor.fromRGB(255, 40, 40));
 		distanceFromPlayer = 60;
 		angleFromPlayer = 0;
 		this._player = player;
+		state.add(this);
 	}
 
 	override public function update(elapsed:Float):Void {

@@ -39,11 +39,12 @@ class Player extends FlxSprite {
 	// Gravity should probably be initially set by the level
 	public var gravity:Float = 200;
 
-	public function new(X:Int, Y:Int) {
+	public function new(X:Int, Y:Int, state:PlayState) {
 		super(X, Y);
 		makeGraphic(VISUAL_SIZE, VISUAL_SIZE, FlxColor.fromRGB(70, 117, 143));
 		addInputs();
-		reticle = new Reticle(x, y, this);
+		state.add(this);
+		reticle = new Reticle(x, y, this, state);
 	}
 
 	// TODO: move controller code into a separate file
