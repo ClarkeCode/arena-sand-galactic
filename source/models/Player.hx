@@ -7,6 +7,7 @@ import flixel.input.actions.FlxActionManager;
 import flixel.math.FlxPoint;
 import flixel.math.FlxVector;
 import flixel.math.FlxVelocity;
+import flixel.text.FlxText;
 import flixel.util.FlxColor;
 
 // Adapted from https://github.com/HaxeFlixel/flixel-demos/blob/master/Input/FlxAction/source/Player.hx
@@ -27,8 +28,8 @@ class Player extends FlxSprite {
 
 	public var isJumping:Bool = false;
 
-	// Time since last jump in seconds
-	var timeSinceJump:Float = 0;
+	// Time spent holding the jump button in seconds
+	var jumpHangTime:Float = 0;
 	var numJumps = 0;
 	var maxJumps = 3;
 
@@ -39,10 +40,18 @@ class Player extends FlxSprite {
 	// Gravity should probably be initially set by the level
 	public var gravity:Float = 200;
 
+	// For debug
+	var DEBUG = false;
+	var dbgtext = new FlxText(0, 0, 0, "", 20);
+
 	public function new(X:Int, Y:Int, state:PlayState) {
 		super(X, Y);
 		makeGraphic(VISUAL_SIZE, VISUAL_SIZE, FlxColor.fromRGB(70, 117, 143));
 		addInputs();
+
+		if (DEBUG) {
+			state.add(dbgtext);
+		}
 		state.add(this);
 		reticle = new Reticle(x, y, this, state);
 	}
@@ -76,7 +85,7 @@ class Player extends FlxSprite {
 	function landOnGround() {
 		acceleration.y = 0;
 		isJumping = false;
-		timeSinceJump = 0;
+		jumpHangTime = 0;
 		numJumps = maxJumps;
 	}
 
@@ -96,23 +105,22 @@ class Player extends FlxSprite {
 		}
 
 		// Jump related controls
+		// If you were jumping and let go of the jump button
 		if (isJumping && !jump.triggered) {
 			isJumping = false;
-			timeSinceJump = 0;
+			jumpHangTime = 0;
 		}
-
-		if (numJumps != 0 && timeSinceJump >= 0 && jump.triggered) {
-			if (timeSinceJump == 0)
-				numJumps--;
+		// Initial jumping
+		if (numJumps >= 1 && jump.triggered && jumpHangTime == 0) {
 			isJumping = true;
-			timeSinceJump += elapsed;
-		}
-		else {
-			timeSinceJump = -1;
-		}
-
-		if (timeSinceJump > 0 && timeSinceJump < 0.5) {
+			jumpHangTime += elapsed;
+			numJumps--;
 			velocity.y = -JUMP_STRENGTH;
+		}
+		// Holding the jump button mid-jump
+		else if (isJumping && jump.triggered && jumpHangTime <= 0.5) {
+			velocity.y = -JUMP_STRENGTH;
+			jumpHangTime += elapsed;
 		}
 
 		// // FlxVelocity.moveTowardsMouse(this, 30);
@@ -128,6 +136,15 @@ class Player extends FlxSprite {
 		// 	moveX *= .707;
 		// 	moveY *= .707;
 		// }
+
+		if (DEBUG) {
+			var buff = new StringBuf();
+			buff.add("IsJumping: ");
+			buff.add(isJumping);
+			buff.add("\nJumps: ");
+			buff.add(numJumps);
+			dbgtext.text = buff.toString();
+		}
 
 		reticle.update(elapsed);
 	}
