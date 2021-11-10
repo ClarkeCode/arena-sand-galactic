@@ -89,6 +89,10 @@ class Player extends FlxSprite {
 		numJumps = maxJumps;
 	}
 
+	override public function kill() {
+		// TODO: implement death behaviour here
+	}
+
 	override public function update(elapsed:Float):Void {
 		super.update(elapsed);
 		// Gravity
