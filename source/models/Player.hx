@@ -17,14 +17,16 @@ class Player extends FlxSprite {
 	static inline var SPEED:Int = 110;
 	static inline var JUMP_STRENGTH:Float = 200;
 
+	var _state:PlayState;
+
 	static var actions:FlxActionManager;
 
 	var up:FlxActionDigital;
 	var down:FlxActionDigital;
 	var left:FlxActionDigital;
 	var right:FlxActionDigital;
-
 	var jump:FlxActionDigital;
+	var fire:FlxActionDigital;
 
 	public var isJumping:Bool = false;
 
@@ -34,6 +36,7 @@ class Player extends FlxSprite {
 	var maxJumps = 3;
 
 	public var reticle:Reticle;
+	public var bullet:Projectile;
 
 	// Per-player gravity in case we want to have gravity altering fields etc
 	// Currently only pulls downward
@@ -54,6 +57,12 @@ class Player extends FlxSprite {
 		}
 		state.add(this);
 		reticle = new Reticle(x, y, this, state);
+
+		_state = state;
+		var bvel = new FlxPoint(0, 0);
+		bullet = new Projectile(x, y, bvel);
+		bullet.makeGraphic(4, 4, 0x00000000);
+		state.add(bullet);
 	}
 
 	// TODO: move controller code into a separate file
@@ -64,10 +73,11 @@ class Player extends FlxSprite {
 		left = new FlxActionDigital();
 		right = new FlxActionDigital();
 		jump = new FlxActionDigital();
+		fire = new FlxActionDigital();
 
 		if (actions == null)
 			actions = FlxG.inputs.add(new FlxActionManager());
-		actions.addActions([up, down, left, right, jump]);
+		actions.addActions([up, down, left, right, jump, fire]);
 
 		// Add keyboard inputs
 		up.addKey(UP, PRESSED);
@@ -80,6 +90,7 @@ class Player extends FlxSprite {
 		right.addKey(D, PRESSED);
 
 		jump.addKey(SPACE, PRESSED);
+		fire.addMouse(LEFT, JUST_PRESSED);
 	}
 
 	public function landOnGround(e:Dynamic, e2:Dynamic) {
@@ -98,6 +109,7 @@ class Player extends FlxSprite {
 		// Gravity
 		acceleration.y = gravity;
 
+		// Horizontal movement
 		if (left.triggered) {
 			velocity.x = -SPEED;
 		}
@@ -127,13 +139,14 @@ class Player extends FlxSprite {
 			jumpHangTime += elapsed;
 		}
 
+		if (fire.triggered) {
+			bullet.kill();
+			bullet = new Projectile(x, y);
+			bullet.makeGraphic(4, 4, FlxColor.PURPLE);
+			bullet.fireAtPosition(x + origin.x, y + origin.y, FlxG.mouse.x, FlxG.mouse.y);
+			_state.add(bullet);
+		}
 		// // FlxVelocity.moveTowardsMouse(this, 30);
-
-		// TODO: hack to give a "floor" until level collision is fixed
-		// if (y > FlxG.height - 65) {
-		// 	y = FlxG.height - 65;
-		// 	landOnGround();
-		// }
 
 		// if (moveX != 0 && moveY != 0)
 		// {
@@ -141,12 +154,16 @@ class Player extends FlxSprite {
 		// 	moveY *= .707;
 		// }
 
+		bullet.update(elapsed);
+
 		if (DEBUG) {
 			var buff = new StringBuf();
 			buff.add("IsJumping: ");
 			buff.add(isJumping);
 			buff.add("\nJumps: ");
 			buff.add(numJumps);
+			buff.add("\nFire?: ");
+			buff.add(fire.triggered);
 			dbgtext.text = buff.toString();
 		}
 
