@@ -26,12 +26,13 @@ class Reticle extends FlxSprite {
 
 	override public function update(elapsed:Float):Void {
 		super.update(elapsed);
-		angleFromPlayer = FlxAngle.angleBetweenMouse(_player);
-		var newPosition:FlxVector = new FlxVector();
-		newPosition = newPosition.add(_player.x + distanceFromPlayer, _player.y);
-		newPosition.rotate(FlxPoint.get(_player.x, _player.y), angleFromPlayer);
-
-		x = newPosition.x;
-		y = newPosition.y;
+		x = FlxG.mouse.x;
+		y = FlxG.mouse.y;
+		var playerDifference:FlxVector = new FlxVector(x - _player.x, y - _player.y);
+		var scaleFactor:Float = distanceFromPlayer / playerDifference.length;
+		playerDifference = playerDifference.scale(scaleFactor);
+		playerDifference.add(_player.x + _player.origin.x, _player.y + _player.origin.y);
+		x = playerDifference.x;
+		y = playerDifference.y;
 	}
 }
