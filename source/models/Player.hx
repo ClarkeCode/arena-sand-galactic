@@ -5,7 +5,6 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup;
 import flixel.input.actions.FlxAction.FlxActionDigital;
 import flixel.input.actions.FlxActionManager;
-import flixel.math.FlxPoint;
 import flixel.math.FlxVector;
 import flixel.math.FlxVelocity;
 import flixel.text.FlxText;
@@ -36,6 +35,7 @@ class Player extends FlxSprite {
 	var numJumps = 0;
 	var maxJumps = 3;
 
+	public var weapon:Weapon;
 	public var reticle:Reticle;
 	public var bullets:FlxTypedGroup<FlxSprite>;
 
@@ -61,6 +61,9 @@ class Player extends FlxSprite {
 
 		bullets = new FlxTypedGroup<FlxSprite>();
 		state.add(bullets);
+		weapon = new Weapon(x, y, 30, this, bullets);
+		weapon.makeGraphic(Std.int(weapon.barrelLength), 5, FlxColor.GRAY);
+		state.add(weapon);
 		_state = state;
 	}
 
@@ -139,10 +142,7 @@ class Player extends FlxSprite {
 		}
 
 		if (fire.triggered) {
-			var bullet = new Projectile(x, y);
-			bullet.makeGraphic(4, 4, FlxColor.PURPLE);
-			bullet.fireAtPosition(x + origin.x, y + origin.y, FlxG.mouse.x, FlxG.mouse.y);
-			bullets.add(bullet);
+			weapon.fireWeapon(FlxG.mouse.x, FlxG.mouse.y);
 		}
 		// // FlxVelocity.moveTowardsMouse(this, 30);
 

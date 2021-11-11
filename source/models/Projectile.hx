@@ -5,6 +5,7 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import flixel.math.FlxVector;
+import util.Convenience;
 
 class Projectile extends FlxSprite {
 	public var baseDamage:Float = 1;
@@ -48,6 +49,12 @@ class Projectile extends FlxSprite {
 		}
 	}
 
+	public function setMovementDirection(velocityDirectionVector:FlxVector) {
+		vScaleToSize(velocityDirectionVector, projectileSpeed);
+		velocity.add(velocityDirectionVector.x, velocityDirectionVector.y);
+	}
+
+	// TODO: Fired bullets are slightly offset from barrel
 	public function fireAtPosition(srcX:Float, srcY:Float, targetX:Float, targetY:Float) {
 		x = srcX;
 		y = srcY;
@@ -55,10 +62,7 @@ class Projectile extends FlxSprite {
 		y -= origin.y / 2;
 
 		var difference = new FlxVector(targetX - x, targetY - y);
-		difference.normalize();
-		difference.scale(projectileSpeed);
-		velocity.x = difference.x;
-		velocity.y = difference.y;
+		setMovementDirection(difference);
 	}
 
 	public function dealDamageToObject(other:FlxObject) {
