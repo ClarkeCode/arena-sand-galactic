@@ -9,27 +9,17 @@ import flixel.tile.FlxTilemap;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxColor;
 import flixel.util.FlxColor;
+import models.Level;
 import models.Player;
-
-using vendor.FlxOgmoUtils;
-using vendor.OgmoUtils;
 
 class PlayState extends FlxState {
 	public var player:Player;
 
-	private var level:FlxTilemap = new FlxTilemap();
+	public var level:FlxTilemap = new FlxTilemap();
 
 	override public function create() {
 		super.create();
-		// this.level = new Level(this);
-		// add(this.level);
-		bgColor = FlxColor.fromRGB(233, 196, 106);
-
-		// Map loading
-		var ogmo = FlxOgmoUtils.get_ogmo_package('assets/data/testzone.ogmo', 'assets/data/testzone.json');
-		level.load_tilemap(ogmo, 'assets/images/', 'walls');
-		add(level);
-		ogmo.level.get_entity_layer('entities').load_entities(placeEntities);
+		new Level(this);
 	}
 
 	override public function update(elapsed:Float) {
