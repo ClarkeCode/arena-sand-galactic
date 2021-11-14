@@ -1,0 +1,79 @@
+{
+  "name": "Testing Larrge",
+  "ogmoVersion": "3.4.0",
+  "levelPaths": ["."],
+  "backgroundColor": "#282c34ff",
+  "gridColor": "#3c4049cc",
+  "anglesRadians": true,
+  "directoryDepth": 5,
+  "layerGridDefaultSize": {"x": 8, "y": 8},
+  "levelDefaultSize": {"x": 320, "y": 240},
+  "levelMinSize": {"x": 1920, "y": 1440},
+  "levelMaxSize": {"x": 1920, "y": 1440},
+  "levelValues": [],
+  "defaultExportMode": ".json",
+  "compactExport": false,
+  "externalScript": "",
+  "playCommand": "",
+  "entityTags": [],
+  "layers": [
+    {
+      "definition": "entity",
+      "name": "entities",
+      "gridSize": {"x": 16, "y": 16},
+      "exportID": "91389429",
+      "requiredTags": [],
+      "excludedTags": []
+    },
+    {
+      "definition": "tile",
+      "name": "walls",
+      "gridSize": {"x": 16, "y": 16},
+      "exportID": "91385390",
+      "exportMode": 0,
+      "arrayMode": 1,
+      "defaultTileset": ""
+    }
+  ],
+  "entities": [
+    {
+      "exportID": "91384746",
+      "name": "player",
+      "limit": -1,
+      "size": {"x": 16, "y": 16},
+      "origin": {"x": 0, "y": 0},
+      "originAnchored": true,
+      "shape": {
+        "label": "Rectangle",
+        "points": [
+          {"x": -1, "y": -1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": -1},
+          {"x": -1, "y": 1},
+          {"x": 1, "y": 1}
+        ]
+      },
+      "color": "#ff0000ff",
+      "tileX": false,
+      "tileY": false,
+      "tileSize": {"x": 16, "y": 16},
+      "resizeableX": false,
+      "resizeableY": false,
+      "rotatable": false,
+      "rotationDegrees": 360,
+      "canFlipX": false,
+      "canFlipY": false,
+      "canSetColor": false,
+      "hasNodes": false,
+      "nodeLimit": 0,
+      "nodeDisplay": 0,
+      "nodeGhost": true,
+      "tags": [],
+      "values": []
+    }
+  ],
+  "tilesets": [
+    {"label": "tiles", "path": "tiles.png", "image": "data:image/png;base64,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", "tileWidth": 16, "tileHeight": 16, "tileSeparationX": 0, "tileSeparationY": 0, "tileMarginX": 0, "tileMarginY": 0}
+  ]
+}

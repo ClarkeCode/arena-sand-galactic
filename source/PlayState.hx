@@ -9,6 +9,7 @@ import flixel.tile.FlxTilemap;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxColor;
 import flixel.util.FlxColor;
+import models.Camera;
 import models.Level;
 import models.Player;
 
@@ -20,6 +21,7 @@ class PlayState extends FlxState {
 	override public function create() {
 		super.create();
 		new Level(this);
+		new Camera(this);
 	}
 
 	override public function update(elapsed:Float) {
